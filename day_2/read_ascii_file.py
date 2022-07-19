@@ -4,6 +4,9 @@
 import numpy as np
 import pandas as pd
 import datetime as dt
+import matplotlib.pyplot as plt
+
+
 
 def read_ascii_file(file,index):
 
@@ -38,19 +41,19 @@ def read_ascii_file(file,index):
 
 if __name__ == "__main__":
 
-    file = '../data/omni_min_case_2013.lst'
-    index = 4
-    time,symh,year,day,hour,minute = read_ascii_file(file,index)
+    file = '../day_2/omni_min_case_2013b.lst'
+    index = -1
+    time,year,day,hour,minute,data = read_ascii_file(file,index)
 
-    import matplotlib.pyplot as plt
+
 
 
     fig,ax = plt.subplots()
-    ax.plot(time,symh,marker='.',
+    ax.plot(time,data,marker='.',
             c='gray',label='All Events',alpha=0.5)
 
-    lp = symh <-100
-    ax.plot(time[lp],symh[lp],c='tab:orange',
+    lp = data <-100
+    ax.plot(time[lp],data[lp],c='tab:orange',
             marker='+',
             linestyle='',
             label='<-100 nT',
@@ -61,9 +64,3 @@ if __name__ == "__main__":
     ax.legend()
 
     plt.show()
-
-
-
-
-
-
