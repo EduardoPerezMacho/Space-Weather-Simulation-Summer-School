@@ -20,8 +20,8 @@ Unzipping a zip file using python
 # Importing the required packages
 import zipfile
 
-with zipfile.ZipFile('Data/jena_climate_2009_2016.csv.zip', 'r') as zip_ref:
-    zip_ref.extractall('Data/jena_climate_2009_2016/')
+with zipfile.ZipFile('C:/Users/edu_p/Desktop/Eduardo/Doutorado/Seminários/2022 Boulder SWSS/Codes/Data1/jena_climate_2009_2016.csv.zip', 'r') as zip_ref:
+    zip_ref.extractall('C:/Users/edu_p/Desktop/Eduardo/Doutorado/Seminários/2022 Boulder SWSS/Codes/Data1/jena_climate_2009_2016/')
     
     
 #%%
@@ -31,9 +31,16 @@ Using panda dataframe to read a csv file and doing some simple data manipulation
 # Importing the required packages
 import pandas as pd
 
-csv_path = 'Data/jena_climate_2009_2016/jena_climate_2009_2016.csv'
+csv_path = 'jena.csv'
 df = pd.read_csv(csv_path)
 
+# Slice [start:stop:step], starting from index 5 take every 6th record. array-style slicing
+df = df[5::6]
+
+# Let's remove the datetime value and make it into a separate variable
+date_time = pd.to_datetime(df.pop('Date Time'), format='%d.%m.%Y %H:%M:%S')
+
+df.head()
 
 #%%
 """
@@ -41,7 +48,13 @@ Plot a subset of data from the dataframe
 """
 
 plot_cols = ['T (degC)', 'p (mbar)', 'rho (g/m**3)']
+plot_features = df[plot_cols]
+plot_features.index = date_time
+_ = plot_features.plot(subplots=True)
 
+plot_features = df[plot_cols][:480]
+plot_features.index = date_time[:480]
+_ = plot_features.plot(subplots=True)
 
 
 #%%
