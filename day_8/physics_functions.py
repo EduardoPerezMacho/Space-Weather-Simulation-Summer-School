@@ -87,8 +87,7 @@ def convert_wavelength_to_joules(wavelength):
 #-----------------------------------------------------------------------------
 
 def calc_tau(SZA_in_deg, density_in_m3, scale_height_in_km, cross_section):
-
-    # We are only going to do this for a single wavelength for now!
+    """ We are only going to do this for a single wavelength for now!"""
 
     cs = cross_section[0]
 
@@ -110,6 +109,30 @@ def calc_tau(SZA_in_deg, density_in_m3, scale_height_in_km, cross_section):
     tau[iWave][:] = integrated_density * cross_section[iWave]
 
     return tau
+
+def calc_tau_all(SZA_in_deg, density_in_m3, scale_height_in_km, cross_section):
+    """ Same as before, for all wavelengths """
+
+    # convert scale height to m:
+    h = scale_height_in_km * 1000.0
+
+    # convert SZA to radians:
+    sza = SZA_in_deg * cD2R_
+
+    # calculate integrated density (which is density * scale height):
+    integrated_density = density_in_m3 * h
+
+    nWaves = len(cross_section)
+    nAlts = len(density_in_m3)
+    tau = np.zeros((nWaves, nAlts))
+
+    for wavelength in range(nWaves):
+        
+         # calculate Tau:
+        tau[wavelength][:] = integrated_density * cross_section[wavelength]       
+        
+    return tau       
+        
 
 #-----------------------------------------------------------------------------
 # Calculate energy deposition as a function of altitude, given:
@@ -133,6 +156,8 @@ def calculate_Qeuv(density_in_m3,
 
     Qeuv = np.zeros(nAlts)
 
+
+
     iWave = 5
 
     # intensity is a function of altitude (for a given wavelength):
@@ -143,6 +168,31 @@ def calculate_Qeuv(density_in_m3,
         intensity * \
         cross_section[iWave] * \
         energies[iWave]
+
+    return Qeuv
+
+def calculate_Qeuv_all(density_in_m3,
+                   intensity_inf,
+                   tau,
+                   cross_section,
+                   energies,
+                   efficiency):
+
+    nAlts = len(density_in_m3)
+    nWaves = len(intensity_inf)
+
+    Qeuv = np.zeros(nAlts)
+
+    for wavelength in range(nWaves):
+        
+        # intensity is a function of altitude (for a given wavelength):
+        intensity = intensity_inf[wavelength] * np.exp(-tau[wavelength][:])
+        Qeuv = Qeuv + \
+            efficiency * \
+            density_in_m3 * \
+            intensity * \
+            cross_section[wavelength] * \
+            energies[wavelength]
 
     return Qeuv
 

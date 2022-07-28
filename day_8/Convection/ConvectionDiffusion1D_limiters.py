@@ -1,3 +1,4 @@
+#%%
 #!/usr/bin/env python
 """
 Solution of a 1D Convection-Diffusion equation: -nu*u_xx + c*u_x = f
@@ -19,7 +20,7 @@ __email__ = 'jvilap@mit.edu'
 import numpy as np
 import matplotlib.pyplot as plt
 from math import pi
-%matplotlib qt
+#%matplotlib qt
 plt.close()
 import matplotlib.animation as animation
 
